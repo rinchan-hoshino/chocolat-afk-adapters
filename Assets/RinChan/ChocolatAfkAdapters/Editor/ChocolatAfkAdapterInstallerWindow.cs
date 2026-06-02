@@ -81,7 +81,6 @@ namespace RinChan.ChocolatAfkAdapters.Editor
 
             ApplyTargetRemaps(targetPreset, patch);
 
-            AfkMotionPatchAuthoring.Schedule(patch);
             Selection.activeGameObject = holder;
             EditorGUIUtility.PingObject(holder);
             Close();

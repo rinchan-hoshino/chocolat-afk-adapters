@@ -6,7 +6,7 @@ This repository is the **adapter pack layer**. It depends on the separate core p
 
 - https://github.com/rinchan-hoshino/vrchat-afk-motion-patcher
 
-It does not include Chocolat, target avatar assets, source animation clips, or generated remapped clips.
+It does not include Chocolat, target avatar assets, source animation clips, or generated remapped clips. The core plugin creates remapped clips transiently during NDMF processing.
 
 ## Current adapter presets
 
