@@ -15,6 +15,7 @@ namespace RinChan.ChocolatAfkAdapters.Editor
         private const string PlumIntroPath = "Assets/Amatousagi/Plum/Animation/AFK/Plum_AFK_Intro_VRSuya.anim";
         private const string PlumLoopPath = "Assets/Amatousagi/Plum/Animation/AFK/Plum_AFK_Loop_VRSuya.anim";
         private const string PlumOutroPath = "Assets/Amatousagi/Plum/Animation/AFK/Plum_AFK_Outro_VRSuya.anim";
+        private const string PlumPrefabPath = "Assets/RinChan/ChocolatAfkAdapters/Prefabs/ChocolatAFKAdapter_Plum.prefab";
 
         private GameObject avatar;
         private TargetPreset targetPreset = TargetPreset.Plum;
@@ -63,23 +64,29 @@ namespace RinChan.ChocolatAfkAdapters.Editor
             if (!LoadStandardChocolatClips(out var chocolatIntro, out var chocolatLoop, out var chocolatOutro)) return;
             if (!LoadTargetClips(targetPreset, out var targetIntro, out var targetLoop, out var targetOutro)) return;
 
-            Undo.RegisterFullObjectHierarchyUndo(avatar, "Add Chocolat AFK Adapter");
+            var prefab = LoadTargetPrefab(targetPreset);
+            if (prefab == null) return;
 
-            var holder = new GameObject("ChocolatAFKAdapter_" + targetPreset);
+            var holder = (GameObject)PrefabUtility.InstantiatePrefab(prefab, avatar.scene);
+            if (holder == null)
+            {
+                EditorUtility.DisplayDialog("Chocolat AFK Adapter", "Failed to instantiate adapter prefab.", "OK");
+                return;
+            }
+
+            Undo.RegisterCreatedObjectUndo(holder, "Add Chocolat AFK Adapter");
             holder.transform.SetParent(avatar.transform, false);
-            var patch = holder.AddComponent<AfkMotionPatch>();
+            holder.name = "ChocolatAFKAdapter_" + targetPreset;
 
-            patch.targetIntroMotion = targetIntro;
-            patch.targetLoopMotion = targetLoop;
-            patch.targetOutroMotion = targetOutro;
-            patch.replacementIntroSource = chocolatIntro;
-            patch.replacementLoopSource = chocolatLoop;
-            patch.replacementOutroSource = chocolatOutro;
-            patch.dropMissingBlendShapes = true;
-            patch.patchActionLayer = true;
-            patch.failOnMissingSource = true;
+            var patch = holder.GetComponent<AfkMotionPatch>();
+            if (patch == null)
+            {
+                EditorUtility.DisplayDialog("Chocolat AFK Adapter", "The adapter prefab does not contain AfkMotionPatch.", "OK");
+                Undo.DestroyObjectImmediate(holder);
+                return;
+            }
 
-            ApplyTargetRemaps(targetPreset, patch);
+            ConfigurePatch(patch, targetPreset, targetIntro, targetLoop, targetOutro, chocolatIntro, chocolatLoop, chocolatOutro);
 
             Selection.activeGameObject = holder;
             EditorGUIUtility.PingObject(holder);
@@ -123,6 +130,33 @@ namespace RinChan.ChocolatAfkAdapters.Editor
                 $"Target AFK clips for {target} were not found. Import the target avatar package first.",
                 "OK");
             return false;
+        }
+
+        private static GameObject LoadTargetPrefab(TargetPreset target)
+        {
+            var path = target == TargetPreset.Plum ? PlumPrefabPath : null;
+            var prefab = !string.IsNullOrEmpty(path) ? AssetDatabase.LoadAssetAtPath<GameObject>(path) : null;
+            if (prefab != null) return prefab;
+
+            EditorUtility.DisplayDialog("Chocolat AFK Adapter", $"Adapter prefab for {target} was not found.", "OK");
+            return null;
+        }
+
+        private static void ConfigurePatch(AfkMotionPatch patch, TargetPreset target, AnimationClip targetIntro, AnimationClip targetLoop, AnimationClip targetOutro, AnimationClip chocolatIntro, AnimationClip chocolatLoop, AnimationClip chocolatOutro)
+        {
+            patch.targetIntroMotion = targetIntro;
+            patch.targetLoopMotion = targetLoop;
+            patch.targetOutroMotion = targetOutro;
+            patch.replacementIntroSource = chocolatIntro;
+            patch.replacementLoopSource = chocolatLoop;
+            patch.replacementOutroSource = chocolatOutro;
+            patch.dropMissingBlendShapes = true;
+            patch.patchActionLayer = true;
+            patch.failOnMissingSource = true;
+            patch.rendererPathRemaps.Clear();
+            patch.blendShapeNameRemaps.Clear();
+            ApplyTargetRemaps(target, patch);
+            EditorUtility.SetDirty(patch);
         }
 
         private static void ApplyTargetRemaps(TargetPreset target, AfkMotionPatch patch)

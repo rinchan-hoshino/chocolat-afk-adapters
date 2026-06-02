@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5864698234461787789
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3018776382798312736}
+  - component: {fileID: 907957660140046670}
+  m_Layer: 0
+  m_Name: ChocolatAFKAdapter_Plum
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3018776382798312736
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5864698234461787789}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &907957660140046670
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5864698234461787789}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46aaa9d7feefe744fa6aba9ee25cee62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetIntroMotion: {fileID: 7400000, guid: d74a7c9345e39e64ca1d41ba75e2ca6d, type: 2}
+  targetLoopMotion: {fileID: 7400000, guid: ecf123ebad23c424fa907b22e5487693, type: 2}
+  targetOutroMotion: {fileID: 7400000, guid: c804b6dd7c6e45e47a3c743894d91c9f, type: 2}
+  replacementIntroSource: {fileID: 7400000, guid: d114bfa4dc3a65642a34fbb8c6afdd26,
+    type: 2}
+  replacementLoopSource: {fileID: 7400000, guid: 121aa0f56fb2ca64f8de3dee58f9de2b,
+    type: 2}
+  replacementOutroSource: {fileID: 7400000, guid: 79cef2f69179625418823f573e2285d9,
+    type: 2}
+  rendererPathRemaps:
+  - fromPath: Body
+    toPath: Body
+  blendShapeNameRemaps:
+  - fromName: eye_nagomi
+    toName: eye_nagomi_1
+  - fromName: eye_nagomi_R
+    toName: eye_nagomi_1_R
+  - fromName: jitome_1
+    toName: eye_nagomi_2
+  dropMissingBlendShapes: 1
+  patchActionLayer: 1
+  failOnMissingSource: 1
